@@ -1,0 +1,26 @@
+import { useRef, useState, type PointerEvent } from "react";
+import { ArrowRight, GripHorizontal } from "lucide-react";
+import { products } from "@/lib/catalog";
+
+const cards = [
+  { number: "01", title: "Equipamentos", eyebrow: "CATÁLOGO PROFISSIONAL", description: "Máquinas e soluções para montar uma operação com desempenho e continuidade.", image: products[0].image, href: "#produtos" },
+  { number: "02", title: "Assistência técnica", eyebrow: "SUPORTE ESPECIALIZADO", description: "Diagnóstico, manutenção e suporte para equipamentos profissionais.", image: products[2].image, href: "#assistencia" },
+  { number: "03", title: "Peças", eyebrow: "COMPONENTES", description: "Encontre o componente certo para reduzir paradas e preservar seu equipamento.", image: products[1].image, href: "#assistencia" },
+  { number: "04", title: "Instalação", eyebrow: "IMPLANTAÇÃO", description: "Instalação técnica e orientação para colocar sua operação em funcionamento.", image: products[3].image, href: "#assistencia" },
+  { number: "05", title: "Manutenção", eyebrow: "PREVENÇÃO", description: "Manutenção planejada para manter produtividade, segurança e vida útil.", image: products[5].image, href: "#assistencia" },
+];
+
+export default function ServiceCarousel() {
+  const viewport = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const dragStart = useRef(0);
+  const scrollStart = useRef(0);
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => { if (!viewport.current) return; setDragging(true); dragStart.current = event.clientX; scrollStart.current = viewport.current.scrollLeft; viewport.current.setPointerCapture(event.pointerId); };
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => { if (!dragging || !viewport.current) return; viewport.current.scrollLeft = scrollStart.current - (event.clientX - dragStart.current); };
+  const onPointerUp = () => setDragging(false);
+  const onScroll = () => { if (!viewport.current) return; const cardWidth = viewport.current.querySelector<HTMLElement>(".service-slide")?.offsetWidth ?? 1; setActive(Math.min(cards.length - 1, Math.max(0, Math.round(viewport.current.scrollLeft / (cardWidth + 16))))); };
+  const goTo = (index: number) => viewport.current?.scrollTo({ left: index * ((viewport.current.querySelector<HTMLElement>(".service-slide")?.offsetWidth ?? 0) + 16), behavior: "smooth" });
+
+  return <section className="service-carousel bg-[#142b3a] py-20 text-white sm:py-28"><div className="container"><div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><div><p className="eyebrow text-[#f1a51b]">LIMAQ • COMO PODEMOS AJUDAR?</p><h2 className="mt-4 max-w-2xl text-4xl font-black tracking-[-.06em] sm:text-6xl">Soluções para cada momento da sua operação.</h2></div><div className="flex items-center gap-3 text-[#f1a51b]"><GripHorizontal size={20} /><span className="font-mono text-[11px] uppercase tracking-[.16em]">Arraste para explorar</span></div></div><div ref={viewport} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onScroll={onScroll} className={`service-track mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5 ${dragging ? "is-dragging" : ""}`} aria-label="Serviços Limaq"><div className="service-slide shrink-0 snap-start" />{cards.map((card, index) => <article key={card.number} className={`service-slide group relative min-h-[430px] w-[82vw] overflow-hidden border border-white/15 bg-[#1b394b] sm:w-[44vw] lg:w-[31vw] ${active === index ? "is-active" : ""}`}><img src={card.image} alt={card.title} draggable={false} className="absolute inset-0 h-full w-full object-cover opacity-45 transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-[#0b1b25] via-[#142b3a]/30 to-transparent" /><div className="relative flex h-full flex-col justify-between p-6 sm:p-8"><div className="flex items-start justify-between"><span className="font-mono text-4xl font-bold text-[#f1a51b]">{card.number}</span><span className="rounded-full border border-white/25 px-3 py-1 text-[9px] font-black uppercase tracking-[.15em] text-white/75">{card.eyebrow}</span></div><div><h3 className="text-3xl font-black capitalize tracking-[-.04em] sm:text-4xl">{card.title}</h3><p className="mt-3 max-w-sm text-sm leading-6 text-white/70">{card.description}</p><a href={card.href} className="mt-7 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[.16em] text-[#f1a51b]">Explorar <ArrowRight size={16} className="transition group-hover:translate-x-1" /></a></div></div></article>)}<div className="service-slide shrink-0 snap-start" /></div><div className="mt-5 flex items-center justify-between border-t border-white/15 pt-5"><div className="flex gap-2">{cards.map((card, index) => <button key={card.number} onClick={() => goTo(index)} className={`h-1.5 transition-all ${active === index ? "w-12 bg-[#f1a51b]" : "w-5 bg-white/25"}`} aria-label={`Ir para ${card.title}`} />)}</div><span className="font-mono text-xs tracking-[.14em] text-white/65">{String(active + 1).padStart(2, "0")} / {String(cards.length).padStart(2, "0")}</span></div></div></section>;
+}
