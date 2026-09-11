@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { useMotionAllowed } from "@/hooks/useMotionAllowed";
+import { localBrandLogos } from "@/lib/brandLogos";
 
 /**
  * Logotipos oficiais dos fabricantes (hospedados no CDN de origem da marca).
@@ -48,18 +49,25 @@ const logos: Record<string, string> = {
   Vitamix: `${base}/f12d375f-4096-4f85-958a-9f0675a54f4c/46_Vitamix.png`,
 };
 
+/**
+ * Cadeia de fallback do logotipo, na ordem:
+ * 1. arquivo local em `src/assets/logos/<slug>.*` (confiável, versionado);
+ * 2. URL oficial no CDN de origem da marca;
+ * 3. wordmark tipográfico local — o tile nunca fica vazio nem depende de rede.
+ */
 function BrandMark({ name }: { name: string }) {
-  const [failed, setFailed] = useState(false);
-  const logo = logos[name];
-  if (!logo || failed) return <span className="brand-tile-wordmark">{name}</span>;
+  const [stage, setStage] = useState(0);
+  const sources = [localBrandLogos[brandSlug(name)], logos[name]].filter(Boolean) as string[];
+  const src = sources[stage];
+  if (!src) return <span className="brand-tile-wordmark">{name}</span>;
   return (
     <img
-      src={logo}
+      src={src}
       alt={`Logo ${name}`}
       loading="lazy"
       decoding="async"
       className="brand-tile-logo"
-      onError={() => setFailed(true)}
+      onError={() => setStage((current) => current + 1)}
     />
   );
 }

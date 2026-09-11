@@ -40,7 +40,8 @@ public/
 | Produtos, categorias, specs | `src/lib/catalog.ts` |
 | Marcas atendidas (nome, categoria, descrição) | `src/components/BrandsExperience.tsx` |
 | Número de WhatsApp | `src/lib/cart.ts` (`WHATSAPP_NUMBER`) |
-| Logo | solte o arquivo em `public/images/logo.png` e aponte `PRIMARY_SRC` em `src/components/BrandLogo.tsx` (hoje: CDN oficial com fallback para wordmark SVG local) |
+| Logo | solte o arquivo em `src/assets/logo.png` (ou `.svg`/`.webp`) — vira a logo principal automaticamente; sem arquivo, usa o CDN oficial e depois o wordmark SVG local |
+| Logos das marcas | solte em `src/assets/logos/<slug>.png` (convenção em `src/assets/logos/README.md`) — entra no site sem alterar código |
 | Textos institucionais (história, serviços, soluções) | `src/pages/Home.tsx`, `src/components/*` |
 | Cores e componentes de estilo | `src/index.css` |
 

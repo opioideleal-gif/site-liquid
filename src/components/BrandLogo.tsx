@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { localLimaqLogo } from "@/lib/brandLogos";
 
 /**
  * Logo da Limaq.
@@ -41,23 +42,26 @@ export default function BrandLogo({
   variant = "color",
 }: {
   className?: string;
-  /** `color` usa o arquivo oficial; `light`/`dark` forçam o wordmark local em uma cor. */
+  /** `color` usa arquivo local/CDN; `light`/`dark` forçam o wordmark local em uma cor. */
   variant?: "color" | "light" | "dark";
 }) {
-  const [failed, setFailed] = useState(false);
+  const [stage, setStage] = useState(0);
+  // 1) arquivo local em src/assets/logo.*  2) CDN oficial  3) wordmark SVG
+  const sources = [localLimaqLogo, PRIMARY_SRC].filter(Boolean) as string[];
+  const src = sources[stage];
 
-  if (variant === "light" || variant === "dark" || failed) {
-    return <Wordmark className={className} accent={variant === "light" ? "#f1a51b" : "#f1a51b"} />;
+  if (variant === "light" || variant === "dark" || !src) {
+    return <Wordmark className={className} accent="#f1a51b" />;
   }
 
   return (
     <img
-      src={PRIMARY_SRC}
+      src={src}
       alt="Limaq Assistência Técnica"
       className={className}
       width={220}
       height={64}
-      onError={() => setFailed(true)}
+      onError={() => setStage((current) => current + 1)}
     />
   );
 }
