@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
 import {
   ArrowRight,
@@ -27,7 +27,9 @@ import BrandsExperience from "@/components/BrandsExperience";
 import ServiceCarousel from "@/components/ServiceCarousel";
 import SolutionsStack from "@/components/SolutionsStack";
 import StickyAssistance from "@/components/StickyAssistance";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useCart } from "@/hooks/useCart";
+import { useMotionAllowed } from "@/hooks/useMotionAllowed";
 import { brands, categories, countByCategory, products } from "@/lib/catalog";
 import { WHATSAPP_NUMBER } from "@/lib/cart";
 
@@ -80,7 +82,53 @@ export default function Home() {
   const [categoryFilter, setCategoryFilter] = useState("Todas");
   const [brandFilter, setBrandFilter] = useState("Todas");
   const [priceFilter, setPriceFilter] = useState("Todas");
-  const [heroShift, setHeroShift] = useState({ x: 0, y: 0 });
+
+  // Parallax do hero: escreve variáveis CSS direto no DOM (requestAnimationFrame),
+  // sem setState — ou seja, sem re-renderizar a página a cada movimento de mouse.
+  // Com motion desligado, nenhum listener é registrado e o hero fica estático.
+  const heroRef = useRef<HTMLElement>(null);
+  const motionAllowed = useMotionAllowed();
+  useBodyScrollLock(searchOpen || menuOpen);
+
+  useEffect(() => {
+    const node = heroRef.current;
+    if (!node || !motionAllowed) {
+      node?.style.setProperty("--hero-x", "0px");
+      node?.style.setProperty("--hero-y", "0px");
+      return;
+    }
+    let frame = 0;
+    let x = 0;
+    let y = 0;
+    const apply = () => {
+      frame = 0;
+      node.style.setProperty("--hero-x", `${x.toFixed(2)}px`);
+      node.style.setProperty("--hero-y", `${y.toFixed(2)}px`);
+    };
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(apply);
+    };
+    const onMove = (event: MouseEvent) => {
+      const rect = node.getBoundingClientRect();
+      x = (event.clientX - rect.left - rect.width / 2) / 45;
+      y = (event.clientY - rect.top - rect.height / 2) / 45;
+      schedule();
+    };
+    const onLeave = () => {
+      x = 0;
+      y = 0;
+      schedule();
+    };
+    node.addEventListener("mousemove", onMove);
+    node.addEventListener("mouseleave", onLeave);
+    return () => {
+      node.removeEventListener("mousemove", onMove);
+      node.removeEventListener("mouseleave", onLeave);
+      if (frame) window.cancelAnimationFrame(frame);
+      node.style.setProperty("--hero-x", "0px");
+      node.style.setProperty("--hero-y", "0px");
+    };
+  }, [motionAllowed]);
 
   const filteredProducts = useMemo(
     () => products.filter((p) => `${p.brand} ${p.name} ${p.model}`.toLowerCase().includes(query.toLowerCase())),
@@ -201,14 +249,10 @@ export default function Home() {
 
       <main id="inicio">
         <section
+          ref={heroRef}
           className="hero-depth relative overflow-hidden bg-[#142b3a] text-white"
-          onMouseMove={(event) => {
-            const rect = event.currentTarget.getBoundingClientRect();
-            setHeroShift({ x: (event.clientX - rect.left - rect.width / 2) / 45, y: (event.clientY - rect.top - rect.height / 2) / 45 });
-          }}
-          onMouseLeave={() => setHeroShift({ x: 0, y: 0 })}
         >
-          <div className="hero-depth-bg" style={{ transform: `translate(${heroShift.x / 3}px, ${heroShift.y / 3}px)` }} />
+          <div className="hero-depth-bg" />
           <div className="container relative z-10 grid min-h-[680px] items-center gap-8 py-16 lg:grid-cols-[.85fr_1.15fr] lg:py-20">
             <div className="max-w-xl">
               <p className="eyebrow text-[#f1a51b]">LIMAQ • DESDE 1987 • BELÉM/PA</p>
@@ -244,18 +288,11 @@ export default function Home() {
                 src={heroImage}
                 alt="Forno combinado profissional em aço inox"
                 className="hero-depth-image"
-                style={{ transform: `translate(${heroShift.x}px, ${heroShift.y}px) scale(1.03)` }}
               />
               <div className="hero-depth-overlay" />
-              <div className="hero-tech-tag tag-one" style={{ transform: `translate(${heroShift.x * 3}px, ${heroShift.y * 3}px)` }}>
-                220V
-              </div>
-              <div className="hero-tech-tag tag-two" style={{ transform: `translate(${heroShift.x * 4}px, ${heroShift.y * 4}px)` }}>
-                INOX
-              </div>
-              <div className="hero-tech-tag tag-three" style={{ transform: `translate(${heroShift.x * 2}px, ${heroShift.y * 2}px)` }}>
-                ALTA PERFORMANCE
-              </div>
+              <div className="hero-tech-tag tag-one">220V</div>
+              <div className="hero-tech-tag tag-two">INOX</div>
+              <div className="hero-tech-tag tag-three">ALTA PERFORMANCE</div>
               <div className="hero-depth-caption">
                 <p className="eyebrow text-[#f1a51b]">EQUIPAMENTO PROFISSIONAL</p>
                 <p className="mt-1 text-sm font-bold">Tecnologia para uma operação contínua.</p>

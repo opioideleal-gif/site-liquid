@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, Check, Minus, Plus, ShoppingCart, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useCart } from "@/hooks/useCart";
 import { buildQuoteMessage, openWhatsApp } from "@/lib/cart";
 
@@ -9,6 +10,7 @@ type Step = "cart" | "form" | "sent";
 export default function CartDrawer() {
   const { lines, count, isOpen, closeCart, setQuantity, remove, clear } = useCart();
   const [step, setStep] = useState<Step>("cart");
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (isOpen && step === "sent") setStep("cart");

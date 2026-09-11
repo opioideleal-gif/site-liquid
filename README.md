@@ -52,6 +52,34 @@ public/
    já preenchidos na mensagem.
 4. A ordem de serviço de assistência técnica segue o mesmo princípio, com campos próprios.
 
+## Sistema de motion (progressive enhancement)
+
+O conteúdo **nunca** depende de animação para existir. Todos os efeitos são camadas
+opcionais sobre um site que funciona sem eles:
+
+| Efeito | Onde | Status |
+|---|---|---|
+| Parallax do hero (variáveis CSS + rAF, sem re-render) | `Home.tsx` | ativo só em desktop/com motion |
+| Pin da assistência (~285vh, 5 passos por scroll) | `StickyAssistance.tsx` | **experimental**: só desktop + motion ligado |
+| Auto-rotate das marcas (4,5s, pausa fora da viewport) | `BrandsExperience.tsx` | ativo com motion |
+| Transições/hover CSS | `index.css` | sempre (não escondem conteúdo) |
+
+Desligar tudo: `VITE_MOTION_ENABLED=false` (dev ou build) — ou o usuário com
+`prefers-reduced-motion: reduce`. Com a flag desligada: sem pin (assistência
+empilhada), hero estático, sem auto-rotate, e todo o resto funcionando.
+
+Mobile nunca usa o pin: a assistência é renderizada empilhada, com scroll nativo.
+
+## Testes
+
+```bash
+npm test         # vitest + jsdom: renderização, filtros, carrinho→WhatsApp, PDP,
+                 # persistência, trava de scroll dos overlays, mobile e motion-off
+```
+
+Os testes cobrem runtime (montagem, estado, localStorage, interações), não layout
+visual — para o visual, conferir o preview em desktop e mobile.
+
 ## Deploy
 
 É uma SPA: qualquer rota (`/produtos/:slug`, `/marcas/:slug`) precisa cair no `index.html`.
