@@ -21,7 +21,7 @@ describe("motion desligado (VITE_MOTION_ENABLED=false)", () => {
     const { default: Home } = await import("@/pages/Home");
     render(<Home />);
     expect(document.querySelectorAll(".product-card").length).toBe(6);
-    expect(document.querySelectorAll(".brand-tile").length).toBe(35);
+    expect(document.querySelectorAll(".brand-tile").length).toBe(47);
     expect(document.querySelector("h1")?.textContent).toContain("Equipamentos para quem leva");
   });
 });

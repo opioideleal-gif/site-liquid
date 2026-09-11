@@ -73,7 +73,17 @@ function BrandMark({ name }: { name: string }) {
 }
 
 export const brands = [
+  ["Aquaplus", "Água", "Purificadores e soluções de água para ambientes profissionais."],
+  ["Arke", "Refrigeração", "Cervejeiras, frigobares e conservação para o seu ponto de venda."],
+  ["Begel", "Refrigeração", "Refrigeração comercial para conservação e exposição."],
+  ["Belliere", "Água", "Bebedouros e soluções de água para alta demanda."],
+  ["Bermar", "Processamento", "Máquinas para preparo, corte e processamento de alimentos."],
+  ["Bimg", "Panificação", "Fornos e equipamentos para produção de panificação."],
+  ["Braesi", "Refrigeração", "Refrigeração comercial e expositores para food service."],
   ["Bras Sulamericana", "Refrigeração", "Sistemas de refrigeração comercial e conservação."],
+  ["CAF Máquinas", "Panificação", "Máquinas para panificação e confeitaria profissional."],
+  ["Cozil", "Cocção", "Equipamentos de cocção para cozinhas profissionais."],
+  ["Croydon", "Água", "Bebedouros e purificadores para operações profissionais."],
   ["Elvi Cozinhas", "Cocção", "Cozinhas profissionais e equipamentos de cocção."],
   ["Everest", "Água", "Bebedouros, purificadores e soluções para água."],
   ["Gastromaq", "Processamento", "Equipamentos para preparo e processamento de alimentos."],
@@ -108,6 +118,8 @@ export const brands = [
   ["Universal", "Processamento", "Equipamentos para preparo e processamento."],
   ["Venâncio", "Cocção", "Equipamentos profissionais para cozinhas e panificação."],
   ["Vitamix", "Processamento", "Liquidificadores profissionais para alta demanda."],
+  ["Vulcan", "Cocção", "Equipamentos profissionais de cocção de alta performance."],
+  ["Wictory", "Cocção", "Soluções de cocção e fritura para food service."],
 ].map(([name, category, description], index) => ({ name, category, description, index }));
 
 export const brandSlug = (name: string) =>

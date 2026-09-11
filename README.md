@@ -41,7 +41,9 @@ public/
 | Marcas atendidas (nome, categoria, descrição) | `src/components/BrandsExperience.tsx` |
 | Número de WhatsApp | `src/lib/cart.ts` (`WHATSAPP_NUMBER`) |
 | Logo | solte o arquivo em `src/assets/logo.png` (ou `.svg`/`.webp`) — vira a logo principal automaticamente; sem arquivo, usa o CDN oficial e depois o wordmark SVG local |
-| Logos das marcas | solte em `src/assets/logos/<slug>.png` (convenção em `src/assets/logos/README.md`) — entra no site sem alterar código |
+| Logos das marcas | solte em `src/assets/logos/<slug>.png` (convenção em `src/assets/logos/README.md`) — entra no site sem alterar código; ou rode `./scripts/import-logos.sh <pasta>` que renomeia e copia tudo (aceita nomes como `17_G.Paniz.png`) |
+
+São **47 marcas atendidas** no grid (contador do hero é dinâmico).
 | Textos institucionais (história, serviços, soluções) | `src/pages/Home.tsx`, `src/components/*` |
 | Cores e componentes de estilo | `src/index.css` |
 

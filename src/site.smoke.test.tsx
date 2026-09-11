@@ -37,9 +37,12 @@ describe("Home — renderização baseline (sem depender de animação)", () => 
       expect(img.getAttribute("src")).toMatch(/^\/images\//);
     });
     expect(document.querySelectorAll(".category-card").length).toBe(6);
-    expect(document.querySelectorAll(".brand-tile").length).toBe(35);
-    // logotipos oficiais presentes, com fallback tipográfico disponível em runtime
-    expect(document.querySelectorAll(".brand-tile-logo").length).toBe(35);
+    expect(document.querySelectorAll(".brand-tile").length).toBe(47);
+    // cada tile exibe logo local/CDN ou wordmark — nunca fica vazio
+    expect(
+      document.querySelectorAll(".brand-tile-logo").length +
+        document.querySelectorAll(".brand-tile-wordmark").length,
+    ).toBe(47);
     expect(screen.getByText(/Sua operação/)).toBeTruthy();
     expect(errors).not.toHaveBeenCalled();
   });

@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import BrandLogo from "@/components/BrandLogo";
-import BrandsExperience from "@/components/BrandsExperience";
+import BrandsExperience, { brands as brandsAtendidas } from "@/components/BrandsExperience";
 import ServiceCarousel from "@/components/ServiceCarousel";
 import SolutionsStack from "@/components/SolutionsStack";
 import StickyAssistance from "@/components/StickyAssistance";
@@ -273,7 +273,7 @@ export default function Home() {
               </div>
               <div className="mt-12 grid max-w-lg grid-cols-3 gap-4 border-t border-white/20 pt-5 text-[10px] font-bold uppercase tracking-[0.15em] text-white/60">
                 <span>
-                  <b className="mb-1 block text-xl text-white">35</b>Marcas atendidas
+                  <b className="mb-1 block text-xl text-white">{brandsAtendidas.length}</b>Marcas atendidas
                 </span>
                 <span>
                   <b className="mb-1 block text-xl text-white">1987</b>Desde Belém
