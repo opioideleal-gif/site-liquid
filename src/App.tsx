@@ -1,12 +1,13 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import CartDrawer from "@/components/CartDrawer";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import BrandResults from "@/pages/BrandResults";
+import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
+import ProductDetail from "@/pages/ProductDetail";
 import { Route, Switch } from "wouter";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-import ProductDetail from "./pages/ProductDetail";
-import BrandResults from "./pages/BrandResults";
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <CartDrawer />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
